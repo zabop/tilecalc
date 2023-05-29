@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3857.js</title>
+  <style>
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-row label {
+      flex: 0 0 120px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.6.0/proj4.js"></script>
+</head>
+<body>
+  <h1>Tile Center Calculator</h1>
+  <form>
+    <div class="input-row">
+      <label for="z-input">Zoom Level (z):</label>
+      <input type="number" id="z-input" placeholder="Enter zoom level" required>
+
+      <label for="x-input">x-id:</label>
+      <input type="number" id="x-input" placeholder="Enter x-id" required>
+
+      <label for="y-input">y-id:</label>
+      <input type="number" id="y-input" placeholder="Enter y-id" required>
+    </div>
+
+    <button type="button" id="calc-button">Calculate</button>
+  </form>
+
+  <div id="result-container"></div>
+
+  <script src="3857.js"></script>
+</body>
+</html>
