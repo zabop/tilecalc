@@ -40,7 +40,25 @@ document.addEventListener("DOMContentLoaded", function () {
       corners.push(roundCoordinates(corner, 8));
     }
 
-    console.log(corners);
+    return corners;
+  }
+
+  function getSWNEcorners3857(z, x, y) {
+    var tc = getTileCentres(z, x, y);
+    var s = sidelength(z);
+    var corners = [];
+    var cornerCoordinates = [
+      [1, -1],
+      [-1, 1],
+    ];
+
+    for (var i = 0; i < cornerCoordinates.length; i++) {
+      var each = cornerCoordinates[i];
+      var v = [each[0] * 0.5 * s, each[1] * 0.5 * s];
+      var corner = [tc[0] + v[0], tc[1] + v[1]];
+      corners.push(roundCoordinates(corner, 8));
+    }
+
     return corners;
   }
 
@@ -115,6 +133,27 @@ document.addEventListener("DOMContentLoaded", function () {
         "POLYGON ((" +
         tileCorners3857.join("; ").replaceAll(",", " ").replaceAll(";", ", ") +
         "))";
+      resultContainer.innerHTML += "<br><hr>"; // Add line break
+
+      var swneCorners3857 = getSWNEcorners3857(z, x, y);
+      // swneCorners4326 = proj4(proj3857, proj4326, swneCorners3857);
+      console.log(swneCorners3857);
+
+      const swneCorners4326 = [];
+      swneCorners3857.forEach((cp) => {
+        swneCorners4326.push(proj4(proj3857, proj4326, cp).reverse());
+      });
+
+      const url =
+        "https://lp-tools.toolforge.org/misc/bbox.html?sw=" +
+        swneCorners4326.join("&ne=");
+
+      const link = document.createElement("a");
+      link.href =
+        "https://lp-tools.toolforge.org/misc/bbox.html?sw=" +
+        swneCorners4326.join("&ne=");
+      link.textContent = url;
+      resultContainer.appendChild(link);
     }
   });
 });
