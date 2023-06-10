@@ -1,5 +1,5 @@
 // Wait for the page to load
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Get the HTML elements
   var xInput = document.getElementById("x-input");
   var yInput = document.getElementById("y-input");
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Function to calculate tile centres
   function getTileCentres(z, x, y) {
     var maxc = 20037508.342789244;
-    var sidelength = 2 * maxc / Math.pow(2, z);
+    var sidelength = (2 * maxc) / Math.pow(2, z);
 
     var centerX = -maxc + maxc / Math.pow(2, z) + sidelength * x;
     var centerY = maxc - maxc / Math.pow(2, z) - sidelength * y;
@@ -18,30 +18,56 @@ document.addEventListener("DOMContentLoaded", function() {
     return [centerX, centerY];
   }
 
+  const maxc = 20037508.342789244;
+  const sidelength = (z) => (2 * maxc) / 2 ** z;
+
+  function getTileCorners(z, x, y) {
+    var tc = getTileCentres(z, x, y);
+    var s = sidelength(z);
+    var corners = [];
+    var cornerCoordinates = [
+      [1, 1],
+      [1, -1],
+      [-1, -1],
+      [-1, 1],
+      [1, 1],
+    ];
+
+    for (var i = 0; i < cornerCoordinates.length; i++) {
+      var each = cornerCoordinates[i];
+      var v = [each[0] * 0.5 * s, each[1] * 0.5 * s];
+      var corner = [tc[0] + v[0], tc[1] + v[1]];
+      corners.push(roundCoordinates(corner, 8));
+    }
+
+    console.log(corners);
+    return corners;
+  }
+
   // Function to round coordinates to the specified decimal places
   function roundCoordinates(coordinates, decimalPlaces) {
     var factor = Math.pow(10, decimalPlaces);
-    return coordinates.map(function(coordinate) {
+    return coordinates.map(function (coordinate) {
       return Math.floor(coordinate * factor) / factor;
     });
   }
 
   // Add event listener to the input fields for Enter key press
-  xInput.addEventListener("keypress", function(event) {
+  xInput.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
       calcButton.click(); // Simulate a click on the Calculate button
     }
   });
 
-  yInput.addEventListener("keypress", function(event) {
+  yInput.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
       calcButton.click(); // Simulate a click on the Calculate button
     }
   });
 
-  zInput.addEventListener("keypress", function(event) {
+  zInput.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent form submission
       calcButton.click(); // Simulate a click on the Calculate button
@@ -49,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   // Add event listener to the calc button
-  calcButton.addEventListener("click", function() {
+  calcButton.addEventListener("click", function () {
     var z = parseFloat(zInput.value);
     var x = parseFloat(xInput.value);
     var y = parseFloat(yInput.value);
@@ -60,11 +86,14 @@ document.addEventListener("DOMContentLoaded", function() {
       var tileCentres3857 = getTileCentres(z, x, y);
 
       resultContainer.innerHTML = "<hr>"; // Add line break
-      resultContainer.innerHTML += "Tile Centre Coordinates in EPSG:3857:<br>" + tileCentres3857.join(", ");
+      resultContainer.innerHTML +=
+        "Tile Centre Coordinates in EPSG:3857:<br>" +
+        tileCentres3857.join(", ");
       resultContainer.innerHTML += "<br><hr>"; // Add line break
 
       // Define the Proj4js projections
-      var proj3857 = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+      var proj3857 =
+        "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
       var proj4326 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 
       // Convert coordinates from EPSG:3857 to EPSG:4326
@@ -73,8 +102,19 @@ document.addEventListener("DOMContentLoaded", function() {
       // Round coordinates to the specified decimal places
       var roundedTileCentres4326 = roundCoordinates(tileCentres4326, 8);
 
-      resultContainer.innerHTML += "Tile Centre Coordinates in EPSG:4326:<br>" + roundedTileCentres4326.join(", ");
-      resultContainer.innerHTML += "<br>"; // Add line break
+      resultContainer.innerHTML +=
+        "Tile Centre Coordinates (Lat." +
+        ", Lon.):<br>" +
+        roundedTileCentres4326.reverse().join(", ");
+      resultContainer.innerHTML += "<br><hr>"; // Add line break
+
+      var tileCorners3857 = getTileCorners(z, x, y);
+
+      resultContainer.innerHTML +=
+        "Tile WKT in EPSG:3857:<br>" +
+        "POLYGON ((" +
+        tileCorners3857.join("; ").replaceAll(",", " ").replaceAll(";", ", ") +
+        "))";
     }
   });
 });
