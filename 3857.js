@@ -128,6 +128,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       var tileCorners3857 = getTileCorners(z, x, y);
 
+      resultContainer.innerHTML += "In EPSG:3857, XY:<br>";
+
+      resultContainer.innerHTML += "NW corner: " + tileCorners3857[3];
+      resultContainer.innerHTML += "<br>";
+      resultContainer.innerHTML += "SW corner: " + tileCorners3857[2];
+      resultContainer.innerHTML += "<br>";
+      resultContainer.innerHTML += "SE corner: " + tileCorners3857[1];
+      resultContainer.innerHTML += "<br>";
+      resultContainer.innerHTML += "NE corner: " + tileCorners3857[0];
+      resultContainer.innerHTML += "<br><hr>"; // Add line break
+
       resultContainer.innerHTML +=
         "Tile WKT in EPSG:3857:<br>" +
         "POLYGON ((" +
