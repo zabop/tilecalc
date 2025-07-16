@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var calcButton = document.getElementById("calc-button");
   var resultContainer = document.getElementById("result-container");
 
+  zInput.value = new URLSearchParams(window.location.search).get("z") ?? 12;
+  xInput.value = new URLSearchParams(window.location.search).get("x") ?? 2169;
+  yInput.value = new URLSearchParams(window.location.search).get("y") ?? 1191;
+
   function getTileCentres(z, x, y) {
     var maxc = 20037508.342789244;
     var sidelength = (2 * maxc) / Math.pow(2, z);
