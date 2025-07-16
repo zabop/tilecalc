@@ -95,6 +95,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  function queryParamUpdate() {
+    var z = parseFloat(zInput.value);
+    var x = parseFloat(xInput.value);
+    var y = parseFloat(yInput.value);
+
+    window.location.search = "?z=" + z + "&x=" + x + "&y=" + y;
+  }
+
+  zInput.addEventListener("change", queryParamUpdate);
+  xInput.addEventListener("change", queryParamUpdate);
+  yInput.addEventListener("change", queryParamUpdate);
+
   // Add event listener to the calc button
   calcButton.addEventListener("click", function () {
     var z = parseFloat(zInput.value);
