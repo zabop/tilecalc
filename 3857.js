@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   var calcButton = document.getElementById("calc-button");
   var resultContainer = document.getElementById("result-container");
 
-  // Function to calculate tile centres
   function getTileCentres(z, x, y) {
     var maxc = 20037508.342789244;
     var sidelength = (2 * maxc) / Math.pow(2, z);
